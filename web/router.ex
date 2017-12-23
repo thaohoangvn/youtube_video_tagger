@@ -16,6 +16,8 @@ defmodule Mivid.Router do
   scope "/", Mivid do
     pipe_through :browser # Use the default browser stack
 
+    get "/users", UserController, :index
+    get "/users/:id", UserController, :show
     get "/", PageController, :index
   end
 
