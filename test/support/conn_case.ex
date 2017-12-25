@@ -26,6 +26,7 @@ defmodule Mivid.ConnCase do
       import Ecto.Query
 
       import Mivid.Router.Helpers
+      import Mivid.TestHelpers
 
       # The default endpoint for testing
       @endpoint Mivid.Endpoint
