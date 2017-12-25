@@ -1,9 +1,11 @@
 defmodule Mivid.VideoController do
   use Mivid.Web, :controller
 
-  plug :scrub_params, "video" when action in [:create, :update]
+  alias Mivid.{Category, Video}
 
-  alias Mivid.Video
+  plug :scrub_params, "video" when action in [:create, :update]
+  plug :load_categories when action in [:new, :create, :edit, :update]
+
 
   def index(conn, _params, user) do
     videos = Repo.all(user_videos(user))
@@ -77,5 +79,14 @@ defmodule Mivid.VideoController do
 
   defp user_videos(user) do
     assoc(user, :videos)
+  end
+
+  defp load_categories(conn, _) do
+    query =
+      Category
+      |> Category.alphabetical
+      |> Category.names_and_ids
+    categories = Repo.all query
+    assign(conn, :categories, categories)
   end
 end
