@@ -9,8 +9,7 @@ defmodule Mivid.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset_create(%User{}, user_params)
-    IO.inspect changeset
+    changeset = User.registration_changeset(%User{}, user_params)
     case Repo.insert(changeset) do
       {:ok, user} ->
         conn
