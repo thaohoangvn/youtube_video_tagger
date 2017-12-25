@@ -1,4 +1,5 @@
 defmodule Mivid.Auth do
+  alias Mivid.Router.Helpers
   import Plug.Conn
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
@@ -38,5 +39,16 @@ defmodule Mivid.Auth do
 
   def logout(conn) do
     configure_session(conn, drop: true)
+  end
+
+  def authenticate_user(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> Phoenix.Controller.put_flash(:error, "You must be logged in to access that page")
+      |> Phoenix.Controller.redirect(to: Helpers.page_path(conn, :index))
+      |> Plug.Conn.halt()
+    end
   end
 end

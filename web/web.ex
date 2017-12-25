@@ -36,6 +36,7 @@ defmodule Mivid.Web do
 
       import Mivid.Router.Helpers
       import Mivid.Gettext
+      import Mivid.Auth, only: [authenticate_user: 2]
     end
   end
 
@@ -58,6 +59,8 @@ defmodule Mivid.Web do
   def router do
     quote do
       use Phoenix.Router
+
+      import Mivid.Auth, only: [authenticate_user: 2]
     end
   end
 
