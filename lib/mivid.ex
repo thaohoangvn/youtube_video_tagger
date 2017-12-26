@@ -12,6 +12,7 @@ defmodule Mivid do
       supervisor(Mivid.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Mivid.Endpoint, []),
+      supervisor(Mivid.InfoSys.Supervisor, []),
       # Start your own worker by calling: Mivid.Worker.start_link(arg1, arg2, arg3)
       # worker(Mivid.Worker, [arg1, arg2, arg3]),
     ]

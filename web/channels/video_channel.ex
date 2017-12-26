@@ -30,15 +30,34 @@ defmodule Mivid.VideoChannel do
 
     case Repo.insert(changeset) do
       {:ok, annotation} ->
-        broadcast! socket, "new_annotation", %{
-          id: annotation.id,
-          user: Mivid.UserView.render("user.json", %{user: user}),
-          body: annotation.body,
-          at: annotation.at 
-        }
+        broadcast_annotation(socket, annotation)
+        Task.start_link(fn -> compute_additional_info(annotation, socket) end)
         {:reply, :ok, socket}
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
     end
+  end
+
+  defp compute_additional_info(ann, socket) do
+    for result <- Mivid.InfoSys.compute(ann.body, limit: 1, timeout: 10_000) do
+      attrs = %{url: result.url, body: result.text, at: ann.at}
+      info_changeset = 
+        Repo.get_by!(Mivid.User, username: result.backend)
+        |> build_assoc(:annotations, video_id: ann.video_id)
+        |> Mivid.Annotation.changeset(attrs)
+      case Repo.insert(info_changeset) do
+        {:ok, info_ann} ->
+          broadcast_annotation(socket, info_ann)
+        {:error, _changeset} ->
+          :ignore
+      end
+      
+    end
+  end
+
+  defp broadcast_annotation(socket, annotation) do
+    annotation = Repo.preload(annotation, :user)
+    rendered_ann = Phoenix.View.render(Mivid.AnnotationView, "annotation.json", %{annotation: annotation})
+    broadcast! socket, "new_annotation", rendered_ann
   end
 end
