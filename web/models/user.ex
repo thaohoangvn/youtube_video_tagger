@@ -7,6 +7,7 @@ defmodule Mivid.User do
     field :password, :string, virtual: true
     field :password_hash, :string
     has_many :videos, Mivid.Video
+    has_many :annotations, Mivid.Annotation
 
     timestamps()
   end

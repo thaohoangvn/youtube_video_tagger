@@ -12,6 +12,7 @@ defmodule Mivid.Video do
     field :slug, :string
     belongs_to :user, Mivid.User
     belongs_to :category, Mivid.Category
+    has_many :annotations, Mivid.Annotation
 
     timestamps()
   end
