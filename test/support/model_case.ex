@@ -21,6 +21,7 @@ defmodule Mivid.ModelCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+      import Mivid.TestHelpers
       import Mivid.ModelCase
     end
   end
